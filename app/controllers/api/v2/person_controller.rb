@@ -43,6 +43,36 @@ module Api
                     charHash[c] = charHash.has_key?(c) ? (charHash[c] + 1) : 1
                 }
             end
+
+            def duplicates
+                res_body = callPeopleEndpoint
+                res_body["data"].map!{ |k|
+                    k["email_address"].downcase.gsub(/[[:space]]/, '')
+                }
+
+                res_body["data"].map!{ |email|
+                    symbol_index = email.index('@')
+                    email = {
+                        email_address: email,
+                        username: username = email[0..symbol_index - 1],
+                        domain: email[symbol_index..email.length]
+                    }
+                }
+
+                output = checkForDuplicate(res_body["data"])
+
+                render json: {
+                    response: output,
+                    response_code: 200
+                }
+            end
+
+            def checkForDuplicate(emails)
+                duplicate_emails = []
+                email_list_copy = Array.new(emails)
+
+                
+            end
         end
     end
 end
