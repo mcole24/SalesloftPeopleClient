@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     get :me, to: 'me#me'
     namespace :v2 do
       get :person, to: 'person#index'
-      get :people, to 'person#getPeople'
+      get :people, to: 'person#getPeople'
     end
   end
 
