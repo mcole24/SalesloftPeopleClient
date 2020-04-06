@@ -9,3 +9,7 @@ export function fetchMe() {
       then(me => dispatch(actions.receiveMe(me)));
   }
 }
+
+export function fetchPeople() {
+  return fetch('http://localhost:5000/api/v2/people', creds).then(res => res.json());
+}
