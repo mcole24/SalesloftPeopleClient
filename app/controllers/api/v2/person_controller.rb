@@ -71,8 +71,19 @@ module Api
                 duplicate_emails = []
                 email_list_copy = Array.new(emails)
 
-                
+                emails.each do |email|
+                    email_list_copy do |copied_email|
+                        if (email[:username] != copied_email[:username]) && email[:username].include? copied_email[:username]
+                            len = Range.new(copied_email[:username].length,copied_email[:username].length + 2)
+                            if len.cover? email[:username].length
+                                email_list_copy.push({original: email, duplicate: copied_email})
+                            end
+                        end
+                    end
+                end
+                return email_list_copy
             end
+            
         end
     end
 end
