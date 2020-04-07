@@ -2,27 +2,34 @@ module Api
     module V2
         require 'net/http'
         class PersonController < Api::BaseController
-            def index
-                render json: {person1: "Test Person"}
-            end
 
             def getPeople
                 res = callPeopleEndpoint
                 res_body = JSON.parse(res.body)
                 res_code = res.code
 
-                render json: {response: res_body, response_code: res_code}
+                render json: {
+                    response: res_body,
+                    operation: "get_people_data",
+                    status: "success",
+                    timestamp:Time.now, 
+                    uuid: SecureRandom.uuid, 
+                    response_code: 200,
+                    message: "Success"
+                }
             end
 
             def characterCount
                 charHash = {}
+                charArr = []
                 res = callPeopleEndpoint
                 res_body = JSON.parse(res.body)
                 res_body["data"].each do |p|
                     getCharacterCount(p["email_adderss"].downcase, charHash)
                 end
                 charHash = Hash[charHash.sort_by{|k,v| v}.reverse]
-                render json: {response: charHash, response_code: 200}
+                charHash.each{|k,v| charArr.push({letter: k, count: v})}
+                render json: {response: charArr, response_code: 200}
             end
 
             def callPeopleEndpoint
@@ -83,7 +90,7 @@ module Api
                 end
                 return email_list_copy
             end
-            
+
         end
     end
 end

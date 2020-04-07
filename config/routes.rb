@@ -6,7 +6,7 @@ Rails.application.routes.draw do
     namespace :v2 do
       get :person, to: 'person#index'
       get :people, to: 'person#getPeople'
-      get :character_count, to: 'person#characterCount'
+      get :character, to: 'person#characterCount'
       get :duplicate, to: 'person#duplicates'
     end
   end
