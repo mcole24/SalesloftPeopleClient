@@ -1,21 +1,19 @@
 module Api
     module V2
-        require 'net/http'
+        require 'httparty'
         class PersonController < Api::BaseController
 
+            include HTTParty
+
             def getPeople
+                puts Rails.config.api_key
                 res = callPeopleEndpoint
                 res_body = JSON.parse(res.body)
                 res_code = res.code
 
                 render json: {
                     response: res_body,
-                    operation: "get_people_data",
-                    status: "success",
-                    timestamp:Time.now, 
-                    uuid: SecureRandom.uuid, 
-                    response_code: 200,
-                    message: "Success"
+                    response_code: 200
                 }
             end
 
@@ -33,15 +31,12 @@ module Api
             end
 
             def callPeopleEndpoint
-                uri = URI(Rails.config.api_url)
-                http = Net::HTTP.new(uri.host, uri.port)
-                http.use_ssl = true
-                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-                req = New::HTTP::Get.new(uri)
-                req["Authorization"] = "Bearer #{Rails.config.api_key}"
-                res = http.request(req)
-
+                url = Rails.config.api_url
+                res = HTTParty.get(url, :headers =>{
+                        'Content-Type' => 'application/json',
+                        'Authorization' => "Bearer #{Rails.config.api_key}"
+                    } 
+                ))              
                 return res
             end
 
